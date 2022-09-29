@@ -4,4 +4,4 @@ Hi Folks...This is a Web-Based Game built using Bootstrap, HTML, CSS, JavaScript
 
 Here's the live link of the website.
 
-https://raovishalyadav.github.io/Time-FrequencyGame/
+https://raovishalyadav.github.io/Time_and_Frequency_Game/
