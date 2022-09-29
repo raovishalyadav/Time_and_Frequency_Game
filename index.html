@@ -1,0 +1,1858 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/plotly.js"></script>
+
+  <style>
+    body {
+      background-color: black;
+    }
+
+    .fullborder {
+      --bs-gutter-x: 0.1rem;
+    }
+
+    .modal {
+      --bs-modal-header-border-color: 0;
+      --bs-modal-footer-border-color: 0;
+    }
+
+    .navbar {
+      --bs-navbar-padding-x: 0;
+      --bs-navbar-padding-y: 0;
+      height: 10.5vh;
+    }
+
+    .card {
+      height: auto;
+      height: 41.6vh;
+    }
+
+    .resp {
+      width: 9.55vw;
+    }
+
+    .card-header {
+      height: 10vh;
+      font-family: bradley Hand, cursive;
+      color: black;
+    }
+
+    .textsize {
+      font-size: 1.05vw;
+    }
+
+    .sineheight {
+      height: 20.8vh;
+    }
+
+    .sizeosc {
+      height: 4vw;
+      object-fit: cover;
+    }
+
+    .sizetimeoff {
+      height: 6.5vw;
+      object-fit: cover;
+    }
+
+    .textoff {
+      font-size: 1.25vw;
+    }
+
+    .btn-group-sm>.btn,
+    .btn-sm {
+      --bs-btn-padding-y: 0rem;
+      --bs-btn-padding-x: 0.47vw;
+      --bs-btn-font-size: 1vw;
+    }
+
+    .btn-group-lg>.btn,
+    .btn-lg {
+      height: 100%;
+      --bs-btn-padding-y: 0rem;
+      --bs-btn-padding-x: 0.1vw;
+      --bs-btn-font-size: 1vw;
+    }
+
+    .btn-dark:hover {
+      background-color: white !important;
+      border-color: cyan;
+    }
+
+    .Sine_wave {
+      background-image: url('assets/images/sine.webp');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+
+    .Sine_wave1 {
+      background-image: url('assets/images/sine1.webp');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+
+    #canvas {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      top: 0;
+      left: 0;
+    }
+
+    #canvas1 {
+      height: 100%;
+      width: 100%;
+      z-index: 2;
+      top: 0;
+      left: 0;
+    }
+
+    .pulse1,
+    .pulse2 {
+      overflow: hidden;
+    }
+
+    .pulse1 span {
+      color: #000;
+      font-size: 6.5vw;
+      width: max-content;
+      padding-left: 100%;
+      -moz-transform: translateX(-100%);
+      -webkit-transform: translateX(-100%);
+      transform: translateX(-100%);
+      -moz-animation: marquee1 1s linear infinite;
+      -webkit-animation: marquee1 1s linear infinite;
+      animation: marquee1 1s linear infinite;
+    }
+
+    /* for Firefox */
+    @-moz-keyframes marquee1 {
+      from {
+        -moz-transform: translateX(-100%);
+      }
+
+      to {
+        -moz-transform: translateX(100%);
+      }
+    }
+
+    /* for Chrome */
+    @-webkit-keyframes marquee1 {
+      from {
+        -webkit-transform: translateX(-100%);
+      }
+
+      to {
+        -webkit-transform: translateX(0%);
+      }
+    }
+
+    @keyframes marquee1 {
+      from {
+        -moz-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+      }
+
+      to {
+        -moz-transform: translateX(0%);
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+      }
+    }
+
+    .pulse2 span {
+      color: #000;
+      font-size: 6.5vw;
+      width: max-content;
+      padding-left: 100%;
+      -moz-transform: translateX(-100%);
+      -webkit-transform: translateX(-100%);
+      transform: translateX(-100%);
+      -moz-animation: marquee2 1s linear infinite;
+      -webkit-animation: marquee2 1s linear infinite;
+      animation: marquee2 1s linear infinite;
+    }
+
+    /* for Firefox */
+    @-moz-keyframes marquee2 {
+      from {
+        -moz-transform: translateX(-100%);
+      }
+
+      to {
+        -moz-transform: translateX(100%);
+      }
+    }
+
+    /* for Chrome */
+    @-webkit-keyframes marquee2 {
+      from {
+        -webkit-transform: translateX(-100%);
+      }
+
+      to {
+        -webkit-transform: translateX(0%);
+      }
+    }
+
+    @keyframes marquee2 {
+      from {
+        -moz-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+      }
+
+      to {
+        -moz-transform: translateX(0%);
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+      }
+    }
+
+    .marque1 {
+      position: relative;
+    }
+
+    .marque2 {
+      position: absolute;
+      bottom: 0px;
+    }
+
+    #more {
+      font-size: 1.1vw;
+      font-family: 'Lucida Casual', 'Comic Sans MS';
+    }
+
+    .textbut {
+      font-size: 1.35vw;
+    }
+
+    .demo1 {
+      --bs-modal-padding: 0;
+    }
+
+    .demo2 {
+      background: transparent !important;
+    }
+
+    .demo3 {
+      border-bottom: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+
+    #confetti {
+      width: 100%;
+      height: 100vh;
+      position: absolute;
+      z-index: 5;
+    }
+
+    .example-open .modal-backdrop {
+      background-color: rgba(0, 0, 0, .0001) !important;
+    }
+  </style>
+
+</head>
+
+<body>
+  <canvas id="confetti"></canvas>
+  <div class="container-fluid border border-info fullborder">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar d-flex bg-info">
+      <div class="container-fluid text-center">
+
+        <div class="col-3"> <button type="button" class="btn btn-light col-11 text-info rounded-5 back1"
+            style="font-size: 1vw; font-family: Arial Black; " onclick="l1()">
+            <div id="lev1"> LEVEL
+              1</div>
+          </button>
+        </div>
+        <div class="col-3"> <button type="button" class="btn btn-light col-11 text-info rounded-5 back2"
+            style="font-size: 1vw; font-family: Arial Black" onclick="l2()">
+            <div id="lev2"> LEVEL
+              2</div>
+          </button>
+        </div>
+        <div class="col-3"> <button type="button" class="btn btn-light col-11 text-info rounded-5 back3"
+            style="font-size: 1vw; font-family: Arial Black" onclick="l3()">
+            <div id="lev3"> LEVEL
+              3</div>
+          </button>
+        </div>
+        <div class="col-3"> <button type="button" class="btn btn-light col-11 text-info rounded-5 back4"
+            style="font-size: 1vw; font-family: Arial Black" onclick="l4()">
+            <div id="lev4"> LEVEL
+              4</div>
+          </button>
+        </div>
+
+      </div>
+    </nav>
+
+    <div class=" container-fluid my-2">
+
+      <div class="row g-1">
+
+        <!-- Reference Oscillator -->
+        <div class="col-5">
+          <div class="row g-1">
+            <div class="col-3">
+              <div class="card text-center border-info cardheight">
+                <div class="card-header bg-info fw-bold fs-6 d-flex align-items-center justify-content-center">
+                  <div class="textsize">
+                    REFERENCE OSCILLATOR FREQUENCY</div>
+                </div>
+                <div
+                  class="card-body bg-secondary rounded-bottom d-flex flex-column justify-content-center align-items-center">
+                  <div class="border border-info bg-light text-info border-5 fw-bold px-1 px-lg-3 my-auto textsize"
+                    id="reference">10 Hz
+                  </div>
+                  <div
+                    class="btn-group btn-group-sm my-auto border border-info d-flex justify-content-center align-items-center"
+                    role="group" aria-label="button group">
+                    <button type="button" class="btn btn-dark text-info fw-bold" onclick="freq_unit1()"
+                      onmouseup="this.blur()">Hz</button>
+                    <button type="button" class="btn btn-dark text-info fw-bold" onclick="freq_unit2()"
+                      onmouseup="this.blur()">kHz</button>
+                    <button type="button" class="btn btn-dark text-info fw-bold" onclick="freq_unit3()"
+                      onmouseup="this.blur()">MHz</button>
+                  </div>
+                  <img src="assets/images/osc.webp" class="img-fluid sizeosc my-auto" alt="...">
+                </div>
+              </div>
+            </div>
+
+            <!-- Sine waves generated from the Oscillator -->
+            <div class="col-9 d-flex flex-column border border-info rounded gx-0">
+              <div class="card Sine_wave sineheight">
+                <div class="card-body p-0">
+                  <canvas id="canvas"></canvas>
+                </div>
+              </div>
+              <div class="card Sine_wave sineheight">
+                <div class="card-body p-0">
+                  <canvas id="canvas1"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signal Generator -->
+        <div class="col-5">
+          <div class="row g-1">
+            <div class="col-3">
+              <div class="card text-center border-info">
+                <div class="card-header bg-info fw-bold fs-6 d-flex align-items-center justify-content-center">
+                  <div class="textsize">
+                    SECONDS GENERATOR</div>
+                </div>
+                <div class="card-body bg-secondary d-flex justify-content-center align-items-center rounded-bottom">
+
+                  <img src="assets/images/oscilloscope.webp" class="img-fluid" alt="...">
+                </div>
+              </div>
+            </div>
+
+            <!-- Number of Pulses per second -->
+            <div class="col-9 d-flex flex-column border border-info rounded gx-0">
+              <div class="card Sine_wave1 sineheight">
+                <div class="card-body p-0 pulse1 d-flex marque1">
+                  <span class="fw-bold marque2">|</span>
+                </div>
+              </div>
+              <div class="card Sine_wave1 sineheight">
+                <div class="card-body p-0 pulse2 d-flex marque1">
+                  <span class="fw-bold marque2">|</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slowness or Fastness of your Clock -->
+        <div class="col-2">
+          <div class="card text-center border-info">
+            <div class="card-header bg-info fw-bold fs-6 d-flex align-items-center justify-content-center">
+              <div class="textsize">TIME OFFSET</div>
+            </div>
+            <div
+              class="card-body bg-secondary rounded-bottom d-flex flex-column justify-content-center align-items-center">
+              <div class="border border-info bg-light text-info border-5 fw-bold my-auto py-0 mx-auto px-2 textoff"
+                id="offset">
+              </div>
+              <img src="assets/images/time.webp" class="img-fluid sizetimeoff my-auto" alt="...">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row g-1 mt-0">
+
+        <div class="col-6">
+          <div class="row g-1">
+
+            <!-- Your Oscillator -->
+            <div class="col resp">
+              <div class="card text-center border-info">
+                <div class="card-header bg-info fw-bold fs-6 header2 d-flex align-items-center justify-content-center">
+                  <div class="textsize">
+                    OSCILLATOR FREQUENCY
+                  </div>
+                </div>
+                <div class="card-body bg-secondary rounded-bottom d-flex flex-column justify-content-center h-50">
+                  <div class="border border-info bg-light text-info border-5 fw-bold textsize" id="f">16 Hz</div>
+                  <div class="btn-group-vertical btn-group-lg my-auto h-75" role="group"
+                    aria-label="Vertical button group">
+                    <button type="button" class="btn btn-dark text-info my-1 border border-info " onclick="incrf()"
+                      onmouseup="this.blur()"><img class="img-fluid" src="assets/images/up.svg" width="35" height="35"
+                        alt=""></button>
+                    <button type="button" class="btn btn-dark text-info border border-info " onclick="decrf()"
+                      onmouseup="this.blur()"><img class="img-fluid" src="assets/images/down.svg" width="35" height="35"
+                        alt=""></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase Difference -->
+            <div class="col resp">
+              <div class="card text-center border-info">
+                <div class="card-header bg-info fw-bold fs-6 header2 d-flex align-items-center justify-content-center">
+                  <div class="textsize">
+                    PHASE DIFFERENCE
+                  </div>
+                </div>
+                <div id="b1"
+                  class="card-body bg-secondary rounded-bottom d-flex flex-column justify-content-center h-50">
+                  <div class="toggle1 border border-info bg-light text-info border-5 fw-bold textsize" id="pd">
+                    0.0030°
+                  </div>
+                  <div class="toggle1 btn-group-vertical btn-group-lg my-auto h-75" role="group"
+                    aria-label="Vertical button group">
+                    <button type="button" class="btn btn-dark text-info my-1 border border-info " onclick="incrpd()"
+                      onmouseup="this.blur()"><img class="img-fluid" src=" assets/images/up.svg" width="35" height="35"
+                        alt=""></button>
+                    <button type="button" class="btn btn-dark text-info border border-info " onclick="decrpd()"
+                      onmouseup="this.blur()"><img class="img-fluid" src="
+                    assets/images/down.svg" width="35" height="35" alt=""></button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase Noise -->
+            <div class="col resp">
+              <div class="card text-center border-info">
+                <div class="card-header bg-info fw-bold fs-6 header2 d-flex align-items-center justify-content-center">
+                  <div class="textsize">
+                    PHASE NOISE
+                    <span class="textsize" id="pnr">(-19°,19°)</span>
+                  </div>
+                </div>
+                <div id="b2"
+                  class="card-body bg-secondary rounded-bottom d-flex flex-column justify-content-center h-50">
+                  <div class="toggle2 border border-info bg-light text-info border-5 fw-bold textsize" id="pn">0
+                  </div>
+                  <div class="toggle2 btn-group-vertical btn-group-lg my-auto h-75" role="group"
+                    aria-label="Vertical button group">
+                    <button type="button" class="btn btn-dark text-info my-1 border border-info " onclick="incrpn()"
+                      onmouseup="this.blur()"><img class="img-fluid" src="assets/images/up.svg" width="35" height="35"
+                        alt=""></button>
+                    <button type="button" class="btn btn-dark text-info border border-info " onclick="decrpn()"
+                      onmouseup="this.blur()"><img class="img-fluid" src="assets/images/down.svg" width="35" height="35"
+                        alt=""></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drift -->
+            <div class="col resp">
+              <div class="card text-center border-info">
+                <div class="card-header bg-info fw-bold fs-6 header2 d-flex align-items-center justify-content-center">
+                  <div class="textsize">
+                    DRIFT
+                  </div>
+                </div>
+                <div id="b3"
+                  class="card-body bg-secondary rounded-bottom d-flex flex-column justify-content-center h-50">
+                  <div class="toggle3 border border-info bg-light text-info border-5 fw-bold textsize" id="dr">
+                    0.003 s/h
+                  </div>
+                  <div class="toggle3 btn-group-vertical btn-group-lg my-auto h-75" role="group"
+                    aria-label="Vertical button group">
+                    <button type="button" class="btn btn-dark text-info my-1 border border-info " onclick="incrd()"
+                      onmouseup="this.blur()"><img class="img-fluid" src="assets/images/up.svg" width="35" height="35"
+                        alt=""></button>
+                    <button type="button" class="btn btn-dark text-info border border-info " onclick="decrd()"
+                      onmouseup="this.blur()"><img class="img-fluid" src="assets/images/down.svg" width="35" height="35"
+                        alt=""></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls for Tutorial, Pause/Resume, Reset and Lock the Game -->
+            <div class="col resp">
+              <div class="card text-center border-info">
+                <div class="card-body bg-secondary d-flex justify-content-center rounded">
+                  <div class="btn-group-vertical btn-group-lg" role="group" aria-label="Vertical button group">
+                    <button type="button" style="font-size: 1.15vw; font-family: arial black, serif;"
+                      class="btn btn-dark text-info mb-1 px-3 fw-bold border border-info textbut" data-bs-toggle="modal"
+                      data-bs-target="#demo" onmouseup="this.blur()">TUTORIAL</button>
+                    <button type="button" class="btn btn-dark text-info mb-1 fw-bold border border-info textbut" id="rp"
+                      onclick="pr()" onmouseup="this.blur()">PAUSE</button>
+                    <button type="button" class="btn btn-dark text-info mb-1 fw-bold border border-info textbut"
+                      onClick="reset()" onmouseup="this.blur()">RESET</button>
+                    <button type="button" class="btn btn-dark text-info fw-bold border border-info textbut" id="lock"
+                      data-bs-toggle="modal" href="#lockup" onclick="lock()" onmouseup="this.blur()">LOCK</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+        <!-- Live Plot of your Clock -->
+        <div class="col-6">
+          <div class="card text-center border-info">
+            <div style="height: 4vh;"
+              class="card-header bg-info fw-bold fs-6 header2 d-flex align-items-center justify-content-center">
+              <div class="textsize">REAL-TIME BEHAVIOR OF YOUR CLOCK (s)</div>
+            </div>
+            <div class="card-body bg-secondary p-0 ms-3">
+              <div id="graph" class="h-100"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- Popup: How to Play the Game -->
+      <div class="modal fade" id="onload" tabindex="-1" aria-labelledby="intro" aria-hidden="true"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content  border-info bg-dark text-light">
+            <div class="modal-header">
+              <h5 class="modal-title text-info fw-bold fs-3 playlevel" id="intro">How to Play?</h5>
+            </div>
+            <div class="modal-body" id="popup">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger text-light" id="close" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Popup: Quiz questions after you finish the Game -->
+      <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="lockup" aria-hidden="true"
+        aria-labelledby="levelclear" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-info bg-dark">
+            <div class="modal-header bg-info text-dark">
+              <h5 class="modal-title" id="levelclear">Congrats Buddy! <img src="assets/images/cool.svg" width="30"
+                  height="30" alt=""> You have cleared this level.</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-light" id="question">
+            </div>
+            <div class="modal-footer">
+              <div class="container text-start">
+                <div class="row row-cols-2 g-1">
+                  <div class="col"> <button type="button" class="btn btn-outline-info col-12" id="a">A.</button>
+                  </div>
+                  <div class="col"> <button type="button" class="btn btn-outline-info col-12" id="b">B.</button>
+                  </div>
+                  <div class="col"> <button type="button" class="btn btn-outline-info col-12" id="c">C.</button>
+                  </div>
+                  <div class="col"> <button type="button" class="btn btn-outline-info col-12" id="d">D.</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Popup: More information about the topic -->
+      <div class="modal fade modal-lg" data-bs-backdrop="static" data-bs-keyboard="false" id="exampleModalToggle2"
+        aria-hidden="true" aria-labelledby="detailedinfo" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-light bg-info text-light">
+            <div class="modal-header bg-dark">
+              <h5 class="modal-title text-info" id="detailedinfo">More Info</h5>
+            </div>
+            <div class="modal-body" id="more">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-success finished" data-bs-dismiss="modal" onclick="next()">NEXT LEVEL</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tutorial Video that plays on the page load -->
+      <div class="container-fluid">
+        <div class="modal demo1 fade modal-lg" id="demo" tabindex="-1" aria-labelledby="gameplay" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content demo2">
+              <div class="modal-header bg-info demo3">
+                <h5 class="modal-title text-light" id="gameplay">Game Tutorial</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <video width="100%" id="video_stop" controls loop src="assets/videos/Game.webm"></video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade modal-lg" data-bs-backdrop="static" data-bs-keyboard="false" id="finish" aria-hidden="true"
+        aria-labelledby="over" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content border-light bg-info text-light text-center"
+            style="Font-family: Impact, Charcoal, Helvetica Inserat, Bitstream Vera Sans Bold, Arial Black, sans serif">
+            <div class="modal-header bg-dark">
+              <h5 class="modal-title text-info text-center fs-2" id="detailedinfo">GAME FINISHED</h5>
+            </div>
+            <div class="modal-body">
+              <h1>Well Done!</h1>
+              <h3>You have cleared all the levels of this Game</h3>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-warning" onclick="retry()">RETRY</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+    //Background transparent of game finished screen
+    $('#finish').on('show.bs.modal', function (e) {
+      $('body').addClass("example-open");
+    }).on('hide.bs.modal', function (e) {
+      $('body').removeClass("example-open");
+    })
+
+    //Confetti
+    const confetti = document.getElementById('confetti');
+    const confettiCtx = confetti.getContext('2d');
+    let container, confettiElements = [],
+      clickPosition;
+
+    // helper
+    rand = (min, max) => Math.random() * (max - min) + min;
+
+    // params to play with
+    const confettiParams = {
+      // number of confetti per "explosion"
+      number: 200,
+      // min and max size for each rectangle
+      size: {
+        x: [5, 20],
+        y: [10, 18]
+      },
+      // power of explosion
+      initSpeed: 25,
+      // defines how fast particles go down after blast-off
+      gravity: 0.65,
+      // how wide is explosion
+      drag: 0.08,
+      // how slow particles are falling
+      terminalVelocity: 6,
+      // how fast particles are rotating around themselves
+      flipSpeed: 0.017,
+    };
+    const colors = [{
+        front: '#3B870A',
+        back: '#235106'
+      },
+      {
+        front: '#B96300',
+        back: '#6f3b00'
+      },
+      {
+        front: '#E23D34',
+        back: '#88251f'
+      },
+      {
+        front: '#CD3168',
+        back: '#7b1d3e'
+      },
+      {
+        front: '#664E8B',
+        back: '#3d2f53'
+      },
+      {
+        front: '#394F78',
+        back: '#222f48'
+      },
+      {
+        front: '#008A8A',
+        back: '#005353'
+      },
+    ];
+
+    setupCanvas();
+    updateConfetti();
+
+    window.addEventListener('resize', () => {
+      setupCanvas();
+      hideConfetti();
+    });
+
+    // Confetti constructor
+    function Conf() {
+      this.randomModifier = rand(-1, 1);
+      this.colorPair = colors[Math.floor(rand(0, colors.length))];
+      this.dimensions = {
+        x: rand(confettiParams.size.x[0], confettiParams.size.x[1]),
+        y: rand(confettiParams.size.y[0], confettiParams.size.y[1]),
+      };
+      this.position = {
+        x: clickPosition[0],
+        y: clickPosition[1]
+      };
+      this.rotation = rand(0, 2 * Math.PI);
+      this.scale = {
+        x: 1,
+        y: 1
+      };
+      this.velocity = {
+        x: rand(-confettiParams.initSpeed, confettiParams.initSpeed) * 0.4,
+        y: rand(-confettiParams.initSpeed, confettiParams.initSpeed)
+      };
+      this.flipSpeed = rand(0.2, 1.5) * confettiParams.flipSpeed;
+
+      if (this.position.y <= container.h) {
+        this.velocity.y = -Math.abs(this.velocity.y);
+      }
+
+      this.terminalVelocity = rand(1, 1.5) * confettiParams.terminalVelocity;
+
+      this.update = function () {
+        this.velocity.x *= 0.98;
+        this.position.x += this.velocity.x;
+
+        this.velocity.y += (this.randomModifier * confettiParams.drag);
+        this.velocity.y += confettiParams.gravity;
+        this.velocity.y = Math.min(this.velocity.y, this.terminalVelocity);
+        this.position.y += this.velocity.y;
+
+        this.scale.y = Math.cos((this.position.y + this.randomModifier) * this.flipSpeed);
+        this.color = this.scale.y > 0 ? this.colorPair.front : this.colorPair.back;
+      }
+    }
+
+    function updateConfetti() {
+      confettiCtx.clearRect(0, 0, container.w, container.h);
+
+      confettiElements.forEach((c) => {
+        c.update();
+        confettiCtx.translate(c.position.x, c.position.y);
+        confettiCtx.rotate(c.rotation);
+        const width = (c.dimensions.x * c.scale.x);
+        const height = (c.dimensions.y * c.scale.y);
+        confettiCtx.fillStyle = c.color;
+        confettiCtx.fillRect(-0.5 * width, -0.5 * height, width, height);
+        confettiCtx.setTransform(1, 0, 0, 1, 0, 0)
+      });
+
+      confettiElements.forEach((c, idx) => {
+        if (c.position.y > container.h ||
+          c.position.x < -0.5 * container.x ||
+          c.position.x > 1.5 * container.x) {
+          confettiElements.splice(idx, 1)
+        }
+      });
+      window.requestAnimationFrame(updateConfetti);
+    }
+
+    function setupCanvas() {
+      container = {
+        w: confetti.clientWidth,
+        h: confetti.clientHeight
+      };
+      confetti.width = container.w;
+      confetti.height = container.h;
+    }
+
+    function addConfetti(e) {
+      const canvasBox = confetti.getBoundingClientRect();
+      if (e) {
+        clickPosition = [
+          e.clientX - canvasBox.left,
+          e.clientY - canvasBox.top
+        ];
+      } else {
+        clickPosition = [
+          canvasBox.width * Math.random(),
+          canvasBox.height * Math.random()
+        ];
+      }
+      for (let i = 0; i < confettiParams.number; i++) {
+        confettiElements.push(new Conf())
+      }
+    }
+
+    function hideConfetti() {
+      confettiElements = [];
+      window.cancelAnimationFrame(updateConfetti)
+    }
+
+    confettiLoop();
+
+    function confettiLoop() {
+      addConfetti();
+      setTimeout(confettiLoop, 700 + Math.random() * 1700);
+    }
+
+    var f1 = 10;
+    var ul = 19;
+    var ll = 7.5;
+    var osc = 16;
+    var f_step = 0.5;
+    var ageing = 0;
+    var ageing1 = 0;
+    var angle = 0;
+    var hertz = ' Hz';
+    var level = 1;
+
+    // Level selector & How to play 
+
+    $(".toggle1,.toggle2,.toggle3").hide();
+    $(".locks").remove();
+    $('#b1,#b2,#b3').append('<img class="img-fluid locks" src="assets/images/lock.svg" />');
+    $('.playlevel').text('LEVEL 1: How to Play?');
+    $('.back1').css({
+      "background-color": "white",
+      "font-size": "2vw"
+    });
+    $('.back2,.back3,.back4').css("background-color", "#212529");
+
+
+    function l1() {
+      if ($('#rp').text() == 'PAUSE') {
+        $('#rp').click();
+      }
+      $('.back1').css({
+        "background-color": "white",
+        "font-size": "2vw"
+      });
+      $('.back2,.back3,.back4').css({
+        "background-color": "#212529",
+        "font-size": "1vw"
+      });
+      xdata = 0;
+      $('#f').text('16 Hz');
+      osc = 16;
+      (wave1.frequency = -0.1).toFixed(3);
+      level = 1;
+      $(".toggle1,.toggle2,.toggle3").hide();
+      $(".locks")
+        .remove();
+      $('#b1,#b2,#b3').append('<img class="img-fluid locks" src="assets/images/lock.svg" />');
+
+      $('.playlevel').text('LEVEL 1: How to Play?');
+
+      $('#popup').text(
+        `You have to adjust the frequency of your clock oscillator to match with the reference clock oscillator. You can either increase or decrease the frequency insteps of 0.5 Hz. You can change your reference clock oscillator to 10 Hz/10 kHz /10 MHz.
+          After your settings are done press the “Lock” button.
+          `);
+      $('#popup').append('<br>After your settings are done press the “Lock” button.');
+      let winningPlayer = "Synchronise your clock within ±1 s accuracy of the reference clock"
+      $('#popup').append(
+        `<br><br><b><span style="color:#39FF14">Your Task: </span><i><u style="text-decoration-color:#39FF14">${winningPlayer}</u></i></b>`
+      );
+
+      $('#onload').modal('show');
+    }
+
+
+    function l2() {
+      if ($('#rp').text() == 'PAUSE') {
+        $('#rp').click();
+      }
+      $('.back2').css({
+        "background-color": "white",
+        "font-size": "2vw"
+      });
+      $('.back1,.back3,.back4').css({
+        "background-color": "#212529",
+        "font-size": "1vw"
+      });
+      xdata = 0;
+      $('#f').text('16 Hz');
+      osc = 16;
+      (wave1.frequency = -0.1).toFixed(3);
+      $("#pd").text('0.0030°');
+      time = 0.003;
+      level = 2;
+      $(".toggle2,.toggle3").hide();
+      $(".toggle1").show();
+      $(".locks").remove();
+      $('#b2,#b3').append('<img class="img-fluid locks" src="assets/images/lock.svg" />')
+
+      $('.playlevel').text('LEVEL 2: How to Play?');
+
+      $('#popup').text(
+        `When you buy a new watch, you will adjust its time once initially, to match the starting points which is also known as epoch. In many situations, two clocks may be working at same frequency of oscillations, but their starting points (epoch) may be different. So, we must adjust this constant error by adjusting the initial phase difference between them. In this level you have to play and adjust the frequency & initial phase difference of your clock oscillator to match with the reference clock oscillator.
+          `);
+      $('#popup').append(
+        '<br>Don’t forget to observe the performance of your clock by choosing 10 kHz and 10 MHz oscillators. As you increase the frequency of oscillator you will get better accurate locking i.e., ms, µs & ns.'
+      );
+      let winningPlayer = "Synchronise your clock within ± 1 ms accuracy of the reference clock"
+      $('#popup').append(
+        `<br><br><b><span style="color:#39FF14">Your Task: </span><i><u style="text-decoration-color:#39FF14">${winningPlayer}</u></i></b>`
+      );
+
+      $('#onload').modal('show');
+    }
+
+
+    function l3() {
+      if ($('#rp').text() == 'PAUSE') {
+        $('#rp').click();
+      }
+      $('.back3').css({
+        "background-color": "white",
+        "font-size": "2vw"
+      });
+      $('.back1,.back2,.back4').css({
+        "background-color": "#212529",
+        "font-size": "1vw"
+      });
+      xdata = 0;
+      $('#f').text('16 Hz');
+      osc = 16;
+      (wave1.frequency = -0.1).toFixed(3);
+      $("#pd").text('0.0030°');
+      time = 0.003;
+      $("#pnr").html('(-19°,+19°)');
+      count = 19;
+      level = 3;
+      $(".toggle3").hide();
+      $(".toggle1,.toggle2").show();
+      $(".locks").remove();
+      $('#b3').append('<img class="img-fluid locks" src="assets/images/lock.svg" />')
+
+      $('.playlevel').text('LEVEL 3: How to Play?');
+
+      $('#popup').text(
+        `Even after buying a clock with good frequency oscillator and adjusting its initial staring point i.e., after synchronising clock frequency and initial phase difference perfectly with respect to the reference clock, it may run faster at one second and slower the very next second. This is due to the random phase noise of the oscillator which makes the clock jump randomly faster or slower every second. In this level you have to play and adjust the frequency, initial phase difference & phase noise of your clock oscillator to match with the reference clock oscillator.
+          `);
+      $('#popup').append(
+        '<br>As the oscillator frequency increase from Hz, kHz to MHz, you can observe that the same phase noise effect becomes smaller and hence, better accuracy can be achieved.'
+      );
+      let winningPlayer = "Synchronise your clock within ± 20 µs accuracy of the reference clock"
+      $('#popup').append(
+        `<br><br><b><span style="color:#39FF14">Your Task: </span><i><u style="text-decoration-color:#39FF14">${winningPlayer}</u></i></b>`
+      );
+
+      $('#onload').modal('show');
+
+    }
+
+    function l4() {
+      if ($('#rp').text() == 'PAUSE') {
+        $('#rp').click();
+      }
+      $('.back4').css({
+        "background-color": "white",
+        "font-size": "2vw"
+      });
+      $('.back1,.back2,.back3').css({
+        "background-color": "#212529",
+        "font-size": "1vw"
+      });
+      xdata = 0;
+      $('#f').text('16 Hz');
+      osc = 16;
+      (wave1.frequency = -0.1).toFixed(3);
+      $("#pd").text('0.0030°');
+      time = 0.003;
+      $("#pnr").html('(-19°,+19°)');
+      count = 19;
+      $("#dr").text('0.003 s/h');
+      m = 3;
+      level = 4;
+      $(".toggle1,.toggle2,.toggle3").show();
+      $(".locks").remove();
+
+      $('.playlevel').text('LEVEL 4: How to Play?');
+
+      $('#popup').text(
+        `Sometimes the quality of the Oscillator in the clock is not so good and requires frequent adjustments of its frequency. This behaviour of clock is known as “clock drift”. It is due to combination of aging of the oscillator and the environmental effects like temperature, humidity, magnetic fields etc., No clock in the world will show the same accuracy all the time without correcting for its drift. Some clocks degrade their performance at few ns per day whereas some degrade fastly i.e., few ms per hour.
+          `);
+      $('#popup').append(
+        '<br>In this level you have to play and adjust all the 4 parameters i.e., frequency, initial phase difference, phase noise & drift of your clock oscillator to match with the reference clock oscillator.'
+      );
+      $('#popup').append(
+        '<br>Observe the Time offset, either it is increasing or decreasing for every second after you match the first 3 parameters other than drift.'
+      );
+      let winningPlayer = "Synchronise your clock within ± 20 ns accuracy of the reference clock"
+      $('#popup').append(
+        `<br><br><b><span style="color:#39FF14">Your Task: </span><i><u style="text-decoration-color:#39FF14">${winningPlayer}</u></i></b>`
+      );
+
+      $('#onload').modal('show');
+    }
+
+    // Reference Oscillator
+    function freq_unit1() {
+      f1 = 10;
+      $('#reference').text('10 Hz');
+      $('#f').text(osc + ' Hz');
+      hertz = ' Hz';
+    }
+
+    function freq_unit2() {
+      f1 = 10000;
+      $('#reference').text('10 kHz');
+      $('#f').text(osc + ' kHz');
+      hertz = ' kHz';
+    }
+
+    function freq_unit3() {
+      f1 = 10000000;
+      $('#reference').text('10 MHz');
+      $('#f').text(osc + ' MHz');
+      hertz = ' MHz';
+    }
+
+    // Oscillator Frequency
+    function incrf() {
+      if (osc.toFixed(8) < ul) {
+        $('#f').text((osc += f_step) + hertz);
+        (wave1.frequency -= 0.005).toFixed(3);
+      }
+    }
+
+    function decrf() {
+      if (osc.toFixed(8) > ll) {
+        $('#f').text((osc -= f_step) + hertz);
+        (wave1.frequency += 0.005).toFixed(3);
+      }
+    }
+
+    // Phase Difference
+    var time = 0.003;
+
+    function incrpd() {
+      if (time != 360) {
+        $("#pd").text((time += 0.001).toFixed(4) + '°');
+        var p = ((document.getElementById("pd").textContent).split("°")[0]);
+        if (level == '2') {
+          (wave1.phase = parseFloat(p));
+        }
+      }
+    }
+
+    function decrpd() {
+      if (time != -360) {
+        $("#pd").text((time -= 0.001).toFixed(4) + '°');
+        var p = ((document.getElementById("pd").textContent).split("°")[0]);
+        if (level == '2') {
+          (wave1.phase = parseFloat(p));
+        }
+      }
+    }
+
+    // Phase Noise
+    var qwe = time;
+
+
+    function gauss() {
+      return qwe;
+    }
+    var count = 19;
+
+    function incrpn() {
+      if ((count >= 0) && (count <= 30)) {
+        count += 3;
+        $("#pnr").html('(-' + count + '°' + ',+' + count + '°)');
+        return count;
+      }
+    }
+
+    function decrpn() {
+      if (count > 1) {
+        count -= 3;
+        $("#pnr").html('(-' + count + '°' + ',+' + count + '°)');
+        return count;
+      }
+    }
+
+    var gauss1 = function () {
+      if ((level == '3') || (level == '4')) {
+        qwe1 = (gauss() + ((Math.random() * count) * (Math.round(Math.random()) ? 1 : -1))).toFixed(3);
+        $("#pn").text(qwe1 + '°');
+        (wave1.phase = parseFloat(qwe1));
+      }
+    }
+
+
+    let startnoise = setInterval(gauss1, 1000);
+
+    // Drift
+    var m = 3;
+
+    function incrd() {
+      if (m <= 4) {
+        (m += 1).toPrecision(3);
+        if (m < 0) {
+          $("#dr").text('-0.00' + Math.abs(m) + ' s/h');
+        } else {
+          $("#dr").text('0.00' + (m) + ' s/h');
+        }
+      }
+    }
+
+    function decrd() {
+      if (m >= -4) {
+        (m -= 1).toPrecision(3);
+        if (m < 0) {
+          $("#dr").text('-0.00' + Math.abs(m) + ' s/h');
+        } else {
+          $("#dr").text('0.00' + (m) + ' s/h');
+        }
+      }
+    }
+
+    // Pause/Resume
+    function pr() {
+      var alter = 1;
+      if (($('#rp').text() == 'PAUSE') && (alter == 1)) {
+        alter = 0;
+        $('#rp').text('RESUME');
+        wave.speed = 0;
+        wave1.speed = 0;
+        $('.pulse1 span').attr("style", "animation-play-state: paused;");
+        $('.pulse2 span').attr("style", "animation-play-state: paused;");
+
+        if (!!plot) {
+          clearInterval(plot);
+          plot = undefined;
+        }
+        if (!!startnoise) {
+          clearInterval(startnoise);
+          startnoise = undefined;
+        }
+        if (!!TimeOffset) {
+          clearInterval(TimeOffset);
+          TimeOffset = undefined;
+        }
+        if (!!Timepps) {
+          clearInterval(Timepps);
+          Timepps = undefined;
+        }
+
+      }
+      if (($('#rp').text() == 'RESUME') && (alter == 1)) {
+        alter = 0;
+        $('#rp').text('PAUSE');
+        wave.speed = 0.01;
+        wave1.speed = 0.01;
+        $('.pulse1 span').attr("style", "animation-play-state: running;");
+        $('.pulse2 span').attr("style", "animation-play-state: running;");
+        startnoise = setInterval(gauss1, 1000);
+        TimeOffset = setInterval(getData, 1000);
+        Timepps = setInterval(getpps, 1000);
+        plot = setInterval(getData1, 1000);
+      }
+    }
+
+    // Unlock
+    function unlock() {
+
+      var f2 = ((document.getElementById("f").textContent).split(" ")[0]);
+      if ((document.getElementById("reference").textContent).split(" ")[1] == 'kHz') {
+        f2 = 1000 * (document.getElementById("f").textContent).split(" ")[0]
+      }
+      if ((document.getElementById("reference").textContent).split(" ")[1] == 'MHz') {
+        f2 = 1000000 * (document.getElementById("f").textContent).split(" ")[0]
+      }
+      if (level != '1') {
+        var p = ((document.getElementById("pd").textContent).split("°")[0]);
+      }
+      f2 = parseFloat(f2);
+
+      if ((level == '1') && (f2 == f1)) {
+        document.getElementById('lock').removeAttribute("disabled");
+      } else if ((level == '2') && ((f2 == f1) && (p ==
+          0.0000))) {
+        document.getElementById('lock').removeAttribute("disabled");
+      } else if ((level == '3') && ((f2 == f1) && (p ==
+          0.0000)) && (count == 1) && (((
+          document
+          .getElementById("f").textContent).split(" ")[1]) != 'Hz')) {
+        document.getElementById('lock').removeAttribute("disabled");
+      } else if ((level == '4') && ((f2 == f1) && (p == 0.0000) &&
+          (((document.getElementById("dr").textContent).split("s/h")[0]) == 0.000)) && (count == 1) && (((
+          document
+          .getElementById("f").textContent).split(" ")[1]) == 'MHz')) {
+        document.getElementById('lock').removeAttribute("disabled");
+      } else {
+        document.getElementById('lock').setAttribute("disabled", "true");
+      }
+
+    }
+    let check = setInterval(unlock, 1000);
+
+    // Reset
+    function reset() {
+      xdata = 0;
+      $('#f').text('16 Hz');
+      $("#pd").text('0.0030°');
+      $("#pnr").html('(-19°,+19°)');
+      count = 19;
+      $("#dr").text('0.003 s/h');
+    }
+
+    // Lock
+    function lock() {
+
+      var f2 = ((document.getElementById("f").textContent).split(" ")[0]);
+      if ((document.getElementById("reference").textContent).split(" ")[1] == 'kHz') {
+        f2 = 1000 * (document.getElementById("f").textContent).split(" ")[0]
+      }
+      if ((document.getElementById("reference").textContent).split(" ")[1] == 'MHz') {
+        f2 = 1000000 * (document.getElementById("f").textContent).split(" ")[0]
+      }
+      if (level != '1') {
+        var p = ((document.getElementById("pd").textContent).split("°")[0]);
+      }
+      f2 = parseFloat(f2);
+      p = parseFloat(p);
+
+      if ((level == '1') && (f2 == f1)) {
+        $("#question").text('What is the frequency of the common quartz osclillator used in your wrist watch?');
+        $("#a").text('A. 327682 Hz');
+        $("#b").text('B. 32678 Hz');
+        $("#c").text('C. 32768 Hz');
+        $("#d").text('D. 32867 Hz');
+        $('#c').click(function () {
+          $('#lockup').modal('hide');
+          $('#exampleModalToggle2').modal('show')
+        });
+        $('#more').text("");
+        $('#more').append(
+          'The standard frequency of the oscillators used in the electronic wrist watch is 2<sup>15</sup> = 32768 Hz. All the manufacturers globally use the same frequency crystal oscillators. The quality of the oscillator may be different but the frequency of them is same in all the electronic watches. '
+        );
+        $('.finished').text('NEXT LEVEL');
+
+      } else if ((level == '2') && ((f2 == f1) && (p == 0.0000))) {
+        $("#question").text(
+          'To send an email or communicate through internet, your computer\'s time should be synchronised with the internet time within atleast?'
+        );
+        $("#a").text('A. ± 10 s');
+        $("#b").text('B. ± 1 s');
+        $("#c").text('C. ± 1000 s');
+        $("#d").text('D. ± 100 s');
+        $('#b').click(function () {
+          $('#lockup').modal('hide');
+          $('#exampleModalToggle2').modal('show')
+        });
+        $('#more').text("");
+        $('#more').append(
+          'All the computers in the world must be synchronised within 1s to communicate with each other independent of country, time zone, day or night. The starting point of time reference “epoch” for each system is different for example, the Network Time Protocol (NTP) used by the computers for synchronising over internet has the starting point at 00:00:00 January 1<sup>st</sup> 1990 whereas the GPS satellite constellation has the epoch at 00:00:00 January 6<sup>th</sup> 1980.'
+        );
+        $('#more').append(
+          '<br><br>You can synchronise your computer “Internet time” to Indian Standard Time (IST) by changing the NTP server address to “time.nplindia.in” in your computer. Step by step procedure to do so for windows 10 OS computer is -'
+        );
+        $('#more').append(
+          '<br>a.	Go to bottom right corner of your task bar (in Windows OS) and right click on “date and time”<br>b.	Select “Adjust Date & Time”<br>c.	Select “Internet Time”<br>d.	Select “Change Settings”<br>e.	Enter the server as “time.nplindia.in” and press “update now”.<br>'
+        );
+        $('.finished').text('NEXT LEVEL');
+
+      } else if ((level == '3') && ((f2 == f1) && (p == 0.0000)) && (
+          count == 1) && (((document
+          .getElementById("f").textContent).split(" ")[1]) != 'Hz')) {
+        $("#question").text(
+          'To make a phone call to your friend, the complete network of your network service provider(like airtel,jio,etc.) should be synchronised within?'
+        );
+        $("#a").text('A. ± 1ms');
+        $("#b").text('B. ± 100µs');
+        $("#c").text('C. ± 100ms');
+        $("#d").text('D. ± 1.1µs');
+        $('#d').click(function () {
+          $('#lockup').modal('hide');
+          $('#exampleModalToggle2').modal('show')
+        });
+        $('#more').text("");
+        $('#more').append(
+          'The telecom network which we use to make phone calls and data exchange has many components starting from nearest cell tower, base station, optical fiber link, wireless & wired microwave links and satellite links to reach the central aggregation level. As per the telecom standards ITU-T G.8271.1 the entire path for this signal should not cause more than 1.1 µs delay which also includes the cable delay and internal delay of the equipments’.'
+        );
+        $('#more').append(
+          '<br>All the telecom networks should follow the same reference time to avoid call drops and other effects especially while a network consumer is in roaming mode.'
+        );
+        $('.finished').text('NEXT LEVEL');
+
+      } else if ((level == '4') && ((f2 == f1) && (p == 0.0000) &&
+          (((document.getElementById("dr").textContent).split("s/h")[0]) == 0.000)) && (count == 1) && (((
+          document
+          .getElementById("f").textContent).split(" ")[1]) == 'MHz')) {
+        $("#question").text(
+          'The time synchronisation required between all the GPS/NAVIC satellites to identity your location with 10 m accuracy is?'
+        );
+        $("#a").text('A. ± 30ns');
+        $("#b").text('B. ± 1ms');
+        $("#c").text('C. ± 100ns');
+        $("#d").text('D. ± 1µs');
+        $('#a').click(function () {
+          $('#lockup').modal('hide');
+          $('#exampleModalToggle2').modal('show')
+        });
+        $('#more').text("");
+        $('#more').append(
+          'To identify a location on the earth using Navigation satellite constellations like GPS/GLONASS/Galileo/BeiDou /IRNSS etc., at least 4 satellite signals are required. All the on-board satellite clocks are maintained at ns level of synchronisation with the system time. The processor used in our mobile phones has AGPS capability to find our location.'
+        );
+        $('#more').append(
+          '<br>You can download the app developed by Google “GnssLogger” from play store and check the status of the satellites, their signal strength etc., which are above your head currently and can do many things with that.'
+        );
+        $('.finished').text('GAME OVER');
+      }
+
+    }
+
+    // Next Level
+    function next() {
+      if (level == '1') {
+        $('#lev2').click()
+      } else if (level == '2') {
+        $('#lev3').click()
+      } else if (level == '3') {
+        $('#lev4').click()
+      }
+    }
+
+    // retry
+    function retry() {
+      $('#finish').modal('hide');
+      $("#confetti").hide();
+      $('#lev1').click()
+    }
+
+    // Sine Waves
+    let canvas, ctx, wave, theta;
+
+    canvas = document.getElementById("canvas");
+    canvas.width = 0.3 * window.innerWidth;
+    canvas.height = 0.2 * window.innerHeight;
+    ctx = canvas.getContext("2d");
+
+    wave = {
+      y: canvas.height / 2,
+      frequency: -0.04,
+      amplitude: canvas.height / 2.5,
+      speed: 0.01
+    };
+    theta = 0;
+    window.requestAnimationFrame(animation);
+    var sine = `rgb(0,0,0)`
+
+    function animation(timestamp) {
+      window.requestAnimationFrame(animation);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.strokeStyle = sine;
+      ctx.lineWidth = 6;
+
+      for (let i = 0; i < window.outerWidth; i++) {
+        ctx.lineTo(i, wave.y + Math.sin((i * wave.frequency) + 0 + theta) * wave.amplitude);
+      }
+
+      ctx.stroke();
+      theta += wave.speed;
+    }
+
+    let canvas1, ctx1, wave1, theta1;
+
+    canvas1 = document.getElementById("canvas1");
+    canvas1.width = 0.3 * window.innerWidth;
+    canvas1.height = 0.2 * window.innerHeight;
+    ctx1 = canvas1.getContext("2d");
+    wave1 = {
+      y: canvas1.height / 2,
+      frequency: -0.1,
+      amplitude: canvas1.height / 2.5,
+      speed: 0.01,
+      phase: 0
+    };
+
+    theta1 = 0;
+    window.requestAnimationFrame(animation1);
+
+    var sine1 = `rgb(0, 0, 0)`
+
+    function animation1(timestamp) {
+      window.requestAnimationFrame(animation1);
+
+      ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+      ctx1.beginPath();
+      ctx1.strokeStyle = sine1;
+      ctx1.lineWidth = 6;
+
+      for (let i = 0; i < window.outerWidth; i++) {
+        ctx1.lineTo(i, wave1.y + Math.sin((i * wave1.frequency) + wave1.phase + theta1) * wave1.amplitude);
+      }
+
+      ctx1.stroke();
+      theta1 += wave1.speed;
+    }
+
+    // Time offset calculation
+
+    var xdata = 0;
+    var run = 0;
+    var run1 = 0;
+
+    function getData() {
+
+      xdata++;
+
+      var f2 = ((document.getElementById("f").textContent).split(" ")[0]);
+      if ((document.getElementById("reference").textContent).split(" ")[1] == 'kHz') {
+        f1 = 10000;
+        f2 = 1000 * (document.getElementById("f").textContent).split(" ")[0]
+      }
+      if ((document.getElementById("reference").textContent).split(" ")[1] == 'MHz') {
+        f1 = 10000000;
+        f2 = 1000000 * (document.getElementById("f").textContent).split(" ")[0]
+      }
+
+      if (level != '1') {
+        var p = ((document.getElementById("pd").textContent).split("°")[0]);
+      }
+
+      if (level == '1') {
+        angle = 0;
+        ageing = 0;
+      }
+
+      if (level == '2') {
+        angle = parseFloat(p);
+        ageing = 0;
+      }
+
+      if (level == '3') {
+        angle = parseFloat((document.getElementById("pn").textContent).split("°")[0]);
+        ageing = 0;
+      }
+
+      if (level == '4') {
+        angle = parseFloat((document.getElementById("pn").textContent).split("°")[0]);
+        ageing = parseFloat((document.getElementById("dr").textContent).split(" ")[0]);
+      }
+
+      if (ageing == 0) {
+        f2 = parseFloat(f2)
+        run = parseFloat((((2 * Math.PI * f1 * xdata) - ((2 * Math.PI * f2 * xdata) + angle)) / (2 * Math.PI *
+          f1)));
+
+        if (isNaN(run) == true) {
+          run = 0;
+        }
+
+        if (run < 0) {
+
+          var unit = Math.floor(Math.log10(Math.abs(run)) + 1);
+          if (unit >= 1) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run)).toPrecision(6) + ' s');
+          }
+          if ((unit <= 0) && (unit >= -2)) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run) * Math.pow(10, 3)).toPrecision(6) + ' ms');
+          }
+          if ((unit <= -3) && (unit >= -5)) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run) * Math.pow(10, 6)).toPrecision(6) + ' µs');
+          }
+          if (unit <= -6) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run) * Math.pow(10, 9)).toFixed(1) + ' ns');
+          }
+
+        } else if ((run == 0) && (level == '1')) {
+
+          $("#offset").text((Math.abs(run)).toFixed(1) + ' s');
+
+        } else if ((run == 0) && (level == '2')) {
+          $("#offset").text((Math.abs(run)).toFixed(1) + ' ms');
+
+        } else {
+          var unit = Math.floor(Math.log10(Math.abs(run)) + 1);
+          if (unit >= 1) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run)).toPrecision(6) + ' s');
+          }
+          if ((unit <= 0) && (unit >= -2)) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run) * Math.pow(10, 3)).toPrecision(6) + ' ms');
+          }
+          if ((unit <= -3) && (unit >= -5)) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run) * Math.pow(10, 6)).toPrecision(6) + ' µs');
+          }
+          if (unit <= -6) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run) * Math.pow(10, 9)).toFixed(1) + ' ns');
+          }
+        }
+
+        return (run);
+      }
+
+      if (ageing != 0) {
+
+        f2 = parseFloat(f2)
+        ageing1 = (f2 * ageing) / 3600
+        run1 = parseFloat(((2 * Math.PI * f1 * xdata) - ((2 * Math.PI * (f2 + ageing1) * xdata) + angle)) / (2 *
+          Math
+          .PI * f1));
+
+        if (run1 < 0) {
+          var unit = Math.floor(Math.log10(Math.abs(run1)) + 1);
+          if (unit >= 1) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run1)).toPrecision(6) + ' s');
+          }
+          if ((unit <= 0) && (unit >= -2)) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run1) * Math.pow(10, 3)).toPrecision(6) + ' ms');
+          }
+          if ((unit <= -3) && (unit >= -5)) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run1) * Math.pow(10, 6)).toPrecision(6) + ' µs');
+          }
+          if (unit <= -6) {
+            $("#offset").html('<i>Fast by</i> ' + (Math.abs(run1) * Math.pow(10, 9)).toFixed(1) + ' ns');
+          }
+        } else {
+          var unit = Math.floor(Math.log10(Math.abs(run1)) + 1);
+          if (unit >= 1) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run1)).toPrecision(6) + ' s');
+          }
+          if ((unit <= 0) && (unit >= -2)) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run1) * Math.pow(10, 3)).toPrecision(6) + ' ms');
+          }
+          if ((unit <= -3) && (unit >= -5)) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run1) * Math.pow(10, 6)).toPrecision(6) + ' µs');
+          }
+          if (unit <= -6) {
+            $("#offset").html('<i>Slow by</i> ' + (Math.abs(run1) * Math.pow(10, 9)).toFixed(1) + ' ns');
+          }
+        }
+
+        return (run1);
+      }
+    }
+    let TimeOffset = setInterval(getData, 1000);
+
+    // pps speed
+    function getpps() {
+      fs = (document.getElementById("offset").textContent).split(" by")[0];
+      tu = (document.getElementById("offset").textContent).split(" ")[3];
+      if (document.getElementById("offset").textContent.includes("by") == true) {
+        toffset = (document.getElementById("offset").textContent).split("by ")[1].split(" ")[0];
+      } else {
+        toffset = (document.getElementById("offset").textContent).split(" ")[0]
+      }
+
+      if (fs == 'Fast') {
+
+        if (tu == 's') {
+
+          if (Math.round(toffset).toString().length >= '3') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.09' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '2') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.095' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '1') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.099' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+
+        }
+        if (tu == 'ms') {
+
+          if (Math.round(toffset).toString().length >= '3') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.1' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '2') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.2' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '1') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.3' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+
+        }
+        if (tu == 'µs') {
+
+          if (Math.round(toffset).toString().length >= '3') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.4' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '2') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.5' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '1') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.6' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+
+        }
+        if (tu == 'ns') {
+
+          if (Math.round(toffset).toString().length >= '3') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.7' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '2') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.8' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '1') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (parseFloat('.9' + Math.round(toffset))) +
+              "s linear infinite;");
+          }
+
+        }
+      } else if (fs == 'Slow') {
+
+        if (tu == 's') {
+
+          $('.pulse2 span').attr("style", "animation: marquee2 " + toffset + "s linear infinite;");
+
+        }
+        if (tu == 'ms') {
+
+          if (Math.round(toffset).toString().length >= '3') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.9' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '2') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.8' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '1') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.7' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+
+        }
+        if (tu == 'µs') {
+
+          if (Math.round(toffset).toString().length >= '3') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.6' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '2') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.5' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '1') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.4' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+
+        }
+        if (tu == 'ns') {
+
+          if (Math.round(toffset).toString().length >= '3') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.3' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '2') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.2' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+          if (Math.round(toffset).toString().length == '1') {
+            $('.pulse2 span').attr("style", "animation: marquee2 " + (1 + parseFloat('.1' + Math.round(
+                toffset))) +
+              "s linear infinite;");
+          }
+
+        }
+      } else {
+        $('.pulse2 span').attr("style", "animation: marquee2 1s linear infinite;");
+      }
+    }
+    let Timepps = setInterval(getpps, 1000);
+
+    // Graph plot
+    var config = {
+      responsive: true,
+      displayModeBar: {
+        values: ['hover', true]
+      },
+      modeBarButtonsToRemove: ['toImage', 'select2d',
+        'sendDataToCloud', 'pan2d', 'lasso2d', 'drawclosedpath', 'drawopenpath', 'drawrect', 'drawcircle',
+        'hoverClosest3d',
+        'toggleSpikelines', 'eraseshape', 'hoverClosestCartesian', 'hoverCompareCartesian',
+        'editInChartStudio', 'zoom2d', 'zoomIn2d', 'zoomOut2d'
+      ],
+      displaylogo: false,
+      scrollZoom: true
+    }
+    var topy = 50
+    var bottomy = -50
+    var layout = {
+      margin: {
+        t: 35,
+        l: 38,
+        r: 20,
+        b: 25,
+        pad: 4
+      },
+      'xaxis': {
+        gridcolor: 'grey',
+        autorange: true,
+        autotick: true,
+        ticklen: 5,
+        tickwidth: 5,
+        tickcolor: 'black'
+      },
+      'yaxis': {
+        gridcolor: 'grey',
+        range: [bottomy, topy],
+        autotick: true,
+        ticklen: 5,
+        tickwidth: 5,
+        tickcolor: 'black'
+      }
+    };
+    var d3 = Plotly.d3;
+    var gd = document.getElementById('graph');
+    Plotly.plot('graph', [{
+      y: [getData()],
+      type: 'line',
+      mode: 'lines+markers',
+      marker: {
+        'color': '#00ffcb',
+        size: 10,
+        symbol: 'x',
+        line: {
+          color: 'black',
+          width: 2
+        }
+      },
+      line: {
+        color: 'black',
+        width: 4
+      }
+    }], layout, config);
+
+    var cnt = 0;
+    let somelist = [];
+    var getData1 = function () {
+
+      somelist.push(getData());
+      if ((somelist.length) > 10) {
+        somelist.splice(0, 1);
+      }
+
+      topy = somelist.reduce((a, b) => Math.max(a, b), -Infinity);
+      bottomy = somelist.reduce((a, b) => Math.min(a, b), +Infinity);
+      topy = topy + 10;
+      bottomy = bottomy - 10;
+
+      Plotly.extendTraces('graph', {
+        y: [
+          [getData()]
+        ]
+      }, [-1]);
+      cnt++;
+      Plotly.relayout('graph', {
+        yaxis: {
+          range: [bottomy, topy]
+        }
+      });
+      Plotly.relayout('graph', {
+        xaxis: {
+          // range: [0, cnt]
+          range: [cnt - 10, cnt + 1]
+        }
+      });
+    }
+
+    let plot = setInterval(getData1, 1000);
+
+    // Tutorial popup on startup
+    window.onload = () => {
+
+      $('#rp').click();
+      $('#close').click(function () {
+        if ($('#rp').text() == 'RESUME') {
+          $('#rp').click();
+        }
+      });
+      $("#confetti").hide();
+      $('.finished').click(function () {
+        if ($('.finished').text() == 'GAME OVER') {
+          $('#finish').modal('show');
+          $("#confetti").show();
+        }
+      });
+      $('#demo').modal('show');
+      level = 1;
+      $(".toggle1,.toggle2,.toggle3").hide();
+      $(".locks").remove();
+      $('#b1,#b2,#b3').append('<img class="img-fluid locks" src="assets/images/lock.svg" />');
+
+      $('#popup').text(
+        `You have to adjust the frequency of your clock oscillator to match with the reference clock oscillator. You can either increase or decrease the frequency insteps of 0.5 Hz. You can change your reference clock oscillator to 10 Hz/10 kHz /10 MHz.
+          After your settings are done press the “Lock” button.
+          `);
+      $('#popup').append('<br>After your settings are done press the “Lock” button.');
+      let winningPlayer = "Synchronise your clock within ±1 s accuracy of the reference clock"
+      $('#popup').append(
+        `<br><br><b><span style="color:#39FF14">Your Task: </span><i><u style="text-decoration-color:#39FF14">${winningPlayer}</u></i></b>`
+      );
+      $('#onload').modal('show');
+    }
+
+    $("#demo").on('hide.bs.modal', function () {
+      $("#video_stop").attr('src', '');
+    });
+
+    $("#demo").on('shown.bs.modal', function () {
+      $("#video_stop").attr('src', "assets/videos/Game.webm");
+    });
+  </script>
+
+
+</body>
+
+</html>
